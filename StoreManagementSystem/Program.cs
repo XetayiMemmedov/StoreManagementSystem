@@ -146,7 +146,7 @@ namespace StoreManagment
                 Console.WriteLine($"Welcomee {admin.Name}");
                 do
                 {
-                    Console.WriteLine("Choose command: [add new store, remove store, add new seller, remove seller, appoint seller, print sellers, print stores, show store sellers, show seller store]");
+                    Console.WriteLine("Choose command: [add new store, remove store, add new seller, remove seller, appoint seller]\nChoose command: [print sellers, print stores, show store sellers, show seller store]");
                     command = Console.ReadLine();
 
                     if (command == "add new store")
