@@ -16,10 +16,21 @@ internal class Store : BaseModel
         Name = name;
         Products = products;
         Id = AutoIncremendId++;
+        
+    }
+    
+
+public Store(string name,Seller [] sellers, Product[] products)
+    {
+        Name = name;
+        Sellers = sellers;
+        Products = products;
+        Id = AutoIncremendId++;
     }
 
     public string Name { get; set; }
-    // public Seller[] Sellers { get; set; }
+    public Seller[] Sellers { get; set; }
 
     public Product[] Products { get; set; }
+    
 }

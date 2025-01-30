@@ -29,8 +29,8 @@ namespace StoreManagment
             Products[3] = new Product("Et", 15m);
 
             Stores = new Store[2];
-            Stores[0] = new Store("Araz", [Products[0], Products[1]]);
-            Stores[1] = new Store("Rahat", [Products[2], Products[3]]);
+            Stores[0] = new Store("Araz", [], [Products[0], Products[1]]);
+            Stores[1] = new Store("Rahat", [], [Products[2], Products[3]]);
 
             Admins = new Admin[1];
             Admins[0] = new Admin("Admin");
@@ -42,6 +42,7 @@ namespace StoreManagment
             Sellers = new Seller[2];
             Sellers[0] = new Seller("Ferid", Stores[0].Id);
             Sellers[1] = new Seller("Ehmed", Stores[1].Id);
+
 
             BuyItems = new BuyItem[3];
             BuyItems[0] = new BuyItem(Products[0], 3);
@@ -56,6 +57,7 @@ namespace StoreManagment
             Users[0] = new User("admin", "1234", 1, Admins[0].Id, -1, -1);
             Users[1] = new User("satici", "1234", 2, -1, Sellers[0].Id, -1);
             Users[2] = new User("musteri", "1234", 3, -1, -1, Customers[0].Id);
+            AppointSellerAuto();
         }
 
         private int _productIndex = 4;
@@ -70,6 +72,11 @@ namespace StoreManagment
         public Receipt[] Receipts { get; set; }
         public BuyItem[] BuyItems { get; set; }
 
+        public void AppointSellerAuto()
+        {
+            Stores[0].Sellers = new Seller[] { Sellers[0] };
+            Stores[1].Sellers = new Seller[] { Sellers[1] };
+        }
         public void AddProduct()
         {
             string name;

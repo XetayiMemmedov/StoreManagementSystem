@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Xml.Linq;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace StoreManagment
@@ -145,14 +146,14 @@ namespace StoreManagment
                 Console.WriteLine($"Welcomee {admin.Name}");
                 do
                 {
-                    Console.WriteLine("Choose command: [add store, remove store, add seller, remove seller]");
+                    Console.WriteLine("Choose command: [add new store, remove store, add new seller, remove seller, appoint seller, print sellers, print stores, show store sellers, show seller store]");
                     command = Console.ReadLine();
 
-                    if (command == "add store")
+                    if (command == "add new store")
                     {
                         Console.Write("Enter the name:");
                         string name = Console.ReadLine();
-                        var store = new Store(name, []);
+                        var store = new Store(name, [], []);
                         var stores = new Store[dataContext.Stores.Length + 1];
                         stores = [.. dataContext.Stores, store];
                         stores[stores.Length - 1] = store;
@@ -168,19 +169,76 @@ namespace StoreManagment
                         dataContext.Stores[index].Name = "Undefined";
                         PrintHelper.PrintStores(dataContext.Stores);
                     }
-
-                    else if (command == "add seller")
+                    else if (command == "add new seller")
                     {
                         Console.Write("Enter the name:");
                         string name = Console.ReadLine();
                         Console.Write("Enter the storid:");
                         int storeId = int.Parse(Console.ReadLine());
-                        var seller = new Seller(name, storeId);
-                        var sellers = new Seller[dataContext.Sellers.Length + 1];
-                        sellers = [.. dataContext.Sellers, seller];
+                        var storeIndex = dataContext.GetStoreIndex(storeId, dataContext.Stores);
+                        var seller = new Seller(name, dataContext.Stores[storeIndex].Id);
+                        var sellers = new Seller[dataContext.Stores[storeIndex].Sellers.Length + 1];
+                        sellers = [.. dataContext.Stores[storeIndex].Sellers, seller];
                         sellers[sellers.Length - 1] = seller;
-                        dataContext.Sellers = sellers;
+                        dataContext.Stores[storeIndex].Sellers= sellers;
                         PrintHelper.PrintSellers(sellers);
+                        var sellersT = new Seller[dataContext.Sellers.Length + 1];
+                        sellersT = [.. dataContext.Sellers, seller];
+                        sellersT[sellersT.Length - 1] = seller;
+                        dataContext.Sellers = sellersT;
+                    }
+
+                    else if (command == "appoint seller")
+                    {
+                        var stores = dataContext.Stores;
+                        var sellers = dataContext.Sellers;
+                        PrintHelper.PrintStores(stores);
+                        Console.Write("Choose store id:");
+                        int storeid = int.Parse(Console.ReadLine());
+                        var storeN = dataContext.GetStore(storeid);
+                        PrintHelper.PrintSellers(sellers);
+                        Console.Write("Choose seller id:");
+                        int sellerid = int.Parse(Console.ReadLine());
+                        var sellerN = dataContext.GetSeller(sellerid);
+                        var sellersStore = new Seller[storeN.Sellers.Length + 1];
+                        sellersStore = [.. storeN.Sellers, sellerN];
+                        sellersStore[sellersStore.Length - 1] = sellerN;
+                        storeN.Sellers = sellersStore;
+                        PrintHelper.PrintSellers(sellersStore);
+
+
+                    }
+                    else if (command == "print sellers")
+                    {
+                        var sellers = dataContext.Sellers;
+                        PrintHelper.PrintSellers(sellers);
+                    }
+                    else if (command == "print stores")
+                    {
+                        var stores = dataContext.Stores;
+                        PrintHelper.PrintStores(stores);
+                    }
+                    else if (command == "show store sellers")
+                    {
+                        var stores = dataContext.Stores;
+                        PrintHelper.PrintStores(stores);
+                        Console.Write("Choose store id:");
+                        int storeid = int.Parse(Console.ReadLine());
+                        var storeN = dataContext.GetStore(storeid);
+                        var sellers = storeN.Sellers;
+                        if (sellers != null)
+                            PrintHelper.PrintSellers(sellers);
+                        else Console.WriteLine("Seller has not been appointed to this store yet");
+                    }
+                    else if (command == "show seller store")
+                    {
+                        var sellers = dataContext.Sellers;
+                        PrintHelper.PrintSellers(sellers);
+                        Console.Write("Choose seller id:");
+                        int sellerid = int.Parse(Console.ReadLine());
+                        var sellerN = dataContext.GetSeller(sellerid);
+                        var sellerStore = dataContext.GetStore(sellerN.StoreId);
+                        PrintHelper.PrintStores([sellerStore]);
                     }
                     else if (command == "remove seller")
                     {
